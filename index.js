@@ -92,6 +92,29 @@ app.delete("/usuarios/:id", (req, res) => {
     }
   });
 
+  app.put("/usuarios/:id", (req, res) => {
+    try {
+      console.log("Chamou update", req.body);
+      const id = req.params.id;
+      const { nome, email } = req.body;
+      client.query(
+        "UPDATE Usuarios SET nome=$1, email=$2 WHERE id =$3 ",
+        [nome, email, id],
+        function (err, result) {
+          if (err) {
+            return console.error("Erro ao executar a qry de UPDATE", err);
+          } else {
+            res.setHeader("id", id);
+            res.status(202).json({ id: id });
+            console.log(result);
+          }
+        }
+      );
+    } catch (erro) {
+      console.error(erro);
+    }
+  });
+
 app.listen(config.port, () =>{
     console.log("Ouvindo na porta " + config.port)
 });
